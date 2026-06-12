@@ -114,7 +114,23 @@ def home(request):
     customers=Customer.objects.values('name').distinct()
     return JsonResponse({'total_customers:' :list(customers)})"""
 #values query
+'''def home(request):
+    customers=Customer.objects.values('name','email')
+    return JsonResponse({'customer': list(customers)})'''
+#values list query
+'''def home(request):
+    customers=Customer.objects.values_list('name',flat=True)
+    return JsonResponse({'customer': list(customers)})'''
+
+#chaining query
+'''def home(request):
+    customers=Customer.objects.filter(name__icontains='nimur').order_by('id')
+    return JsonResponse({'customer': list(customers)})'''
+#Raw Sql Query
 def home(request):
-    customers=Customer.objects.values('name').distinct()
-    return JsonResponse({'total_customers:' :list(customers)})
+    query="select * from myapp_customer where name =%s"
+    customerts=Customer.objects.raw(query,['Rahim Uddin'])
+    result=[{'id':customer.id,'name':customer.name} for customer in customerts]
+    return JsonResponse({'customers':result})
+
 
