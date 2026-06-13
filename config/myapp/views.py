@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from .models import Customer
+from .models import Product,Category,User
 from django.core.serializers import serialize
 import json
 from django.forms.models import model_to_dict
@@ -127,10 +128,54 @@ def home(request):
     customers=Customer.objects.filter(name__icontains='nimur').order_by('id')
     return JsonResponse({'customer': list(customers)})'''
 #Raw Sql Query
-def home(request):
+'''def home(request):
     query="select * from myapp_customer where name =%s"
     customerts=Customer.objects.raw(query,['Rahim Uddin'])
     result=[{'id':customer.id,'name':customer.name} for customer in customerts]
-    return JsonResponse({'customers':result})
+    return JsonResponse({'customers':result})'''
+#Range operator
+'''def home(request):
+    #Range operator
+    res1=Product.objects.filter(price__range=(100,600)).values()
+    #Membership Operator
+    res2=Product.objects.filter(price__in=[150,300]).values()
+    #Not in query range or in
+    res3=Product.objects.exclude(price__range=(400,600)).values()
+    res4=Product.objects.exclude(price__in=[100,200,300]).values()
+    
+    return JsonResponse(
+        {
+            'res1':list(res1),
+            'res2':list(res2),
+            'res3':list(res3),
+            'res4':list(res4)
+        }
+    )'''
+#insert & delete operation
+'''def home(request):
+    new_product=Product.objects.create(
+        name="Opent Ai",
+        price=200,
+        unit="per user",
+        img_url="https://www.imgacademy.com/news/merrill-and-img-academy-launch-partnership-bring-financial-education-student-athletes",
+        Category_id=1,
+        user_id=1
+    )
+    return JsonResponse({"message":"Product inserted sucessfull","id":new_product.id})'''
 
-
+    #Many id
+def home(request):
+     '''   Products=[
+        Product(name="OpenAi",price=200,unit="per user",img_url="https://www.imgacademy.com/",Category_id=1,user_id=1),
+        Product(name="OpenAi",price=200,unit="per user",img_url="https://www.imgacademy.com/",Category_id=1,user_id=1),
+        Product(name="OpenAi",price=200,unit="per user",img_url="https://www.imgacademy.com/",Category_id=1,user_id=1)
+    ]
+        Product.objects.bulk_create(Products)
+        return JsonResponse({"message":"All Product Inserted Sucessfully"})'''
+     try:
+         Product=Product.objects.get(id=16)
+         Product.delete()
+         return JsonResponse({"message":"All Product delete Sucessfully"})
+     except Exception:
+         return JsonResponse({"message":" Product not found"})
+            
