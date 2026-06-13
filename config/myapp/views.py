@@ -213,15 +213,33 @@ def home(request):
         return JsonResponse({"message:":message})
     except Exception:
         return JsonResponse({"messgae":"not found of product"})'''
-def home(request):
+'''def home(request):
     #left join
     result=User.objects.filter().select_related('categorys').values(
         'id','username','categories__id','categories__name'
     )
     #INNER JOIN "auth_user"
-    '''result=Category.objects.filter().select_related('user').values(
+    result=Category.objects.filter().select_related('user').values(
             'id','name','user__id','user__email','user__username'
-        )'''
+        )
     query=str(result.query)
-    return JsonResponse({'query':query,"data":list(result)})
+    return JsonResponse({'query':query,"data":list(result)})'''
+def home(request):
+    return HttpResponse("hello django")
+def setSessionData(request):
+    request.session['username']='nimur'
+    request.session['user__id']='12345'
+    return HttpResponse("session date set")
+def getSeesionData(request):
+    usernane=request.session.get('username','default')
+    user_id=request.session.get('username','default')
+    return HttpResponse(f"Username:{usernane},user id{user_id}")
+def clearSpecificSession(request):
+    if 'username' in request.session:
+        del request.session['username']
+    return HttpResponse("Username session data delete")
+def cleareAllSession(request):
+    request.session.flush()
+    return HttpResponse("All data delete")
+    
               
