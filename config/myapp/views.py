@@ -164,18 +164,64 @@ def home(request):
     return JsonResponse({"message":"Product inserted sucessfull","id":new_product.id})'''
 
     #Many id
-def home(request):
-     '''   Products=[
+'''def home(request):
+        Products=[
         Product(name="OpenAi",price=200,unit="per user",img_url="https://www.imgacademy.com/",Category_id=1,user_id=1),
         Product(name="OpenAi",price=200,unit="per user",img_url="https://www.imgacademy.com/",Category_id=1,user_id=1),
         Product(name="OpenAi",price=200,unit="per user",img_url="https://www.imgacademy.com/",Category_id=1,user_id=1)
     ]
         Product.objects.bulk_create(Products)
         return JsonResponse({"message":"All Product Inserted Sucessfully"})'''
-     try:
+     #delete sql
+'''  try:
          Product=Product.objects.get(id=16)
          Product.delete()
          return JsonResponse({"message":"All Product delete Sucessfully"})
      except Exception:
-         return JsonResponse({"message":" Product not found"})
-            
+         return JsonResponse({"message":" Product not found"})'''
+    #update 
+   
+'''def home(request):
+    try:
+        #get the product by ID
+        product=Product.objects.get(id=17)
+        #update fields
+        product.name="Mouse"
+        product.price=300
+        #save change
+        product.save()
+        return JsonResponse({"message":"Product upload sucessfully"})
+    except Exception:
+        return JsonResponse({"messgae":"not found of product"})'''
+'''def home(request):
+    try:
+        updated,created=Product.objects.update_or_create(
+            name='Mouse1', #loop
+            defaults={
+                'name':"Mouse1",
+                'price':200,
+                'unit':"per user",
+                'img_url':"https://www.imgacademy.com/",
+                'Category_id':1,
+                'user_id':1
+            }
+        )
+        if created:
+            message="Product inserted sucessfully"
+        if updated:
+            message="Product updated sucessfully"
+        return JsonResponse({"message:":message})
+    except Exception:
+        return JsonResponse({"messgae":"not found of product"})'''
+def home(request):
+    #left join
+    result=User.objects.filter().select_related('categorys').values(
+        'id','username','categories__id','categories__name'
+    )
+    #INNER JOIN "auth_user"
+    '''result=Category.objects.filter().select_related('user').values(
+            'id','name','user__id','user__email','user__username'
+        )'''
+    query=str(result.query)
+    return JsonResponse({'query':query,"data":list(result)})
+              
